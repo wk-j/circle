@@ -36,6 +36,6 @@ let cloneAndConvertToAvatarWithoutApply(img: Image<Rgba32>) (size: Size) radius 
 [<EntryPoint>]
 let main argv =
     use img = Image.Load("images/jw.jpg")
-    use round = img.Clone(fun x -> convertToAvatar x (Size(200, 200)) 100.0f |> ignore) 
-    round.Save("images/output.jpg")
+    use round = img.Clone(fun x -> convertToAvatar x (Size(200, 200)) 20.0f |> ignore) 
+    round.Save("images/output.png")
     0 // return an integer exit code
