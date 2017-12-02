@@ -8,6 +8,11 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dotnet-circle.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="sixLabors.ImageSharp" Version="1.0.0-beta0002" />
     <PackageReference Include="sixLabors.ImageSharp.Drawing" Version="1.0.0-beta0002" />
   </ItemGroup>
