@@ -1,11 +1,16 @@
 ﻿// Learn more about F# at http://fsharp.org
 
+module DotnetCircle.Program
+
 open System
 open SixLabors.ImageSharp
 open SixLabors.Shapes
 open SixLabors.ImageSharp.PixelFormats
 open SixLabors.Primitives
 open SixLabors.ImageSharp.Processing
+open System.IO
+open System.Net.Http
+open System.ComponentModel.Design
 
 let buildCorner width height radius = 
     let rect = RectangularePolygon(-0.5f, -0.5f, radius, radius)
@@ -33,9 +38,37 @@ let cloneAndConvertToAvatarWithoutApply(img: Image<Rgba32>) (size: Size) radius 
     let result = img.Clone(fun x -> x.Resize(ResizeOptions(Size = size, Mode = ResizeMode.Crop)) |> ignore)
     applyRoundedCorners result radius
 
+let downloadImage httpPath = 
+    printfn "-- downlaod | %s" httpPath
+
+    use client = new HttpClient()
+    let rs = client.GetAsync(httpPath: string) |> Async.AwaitTask |> Async.RunSynchronously
+    let content = rs.Content.ReadAsByteArrayAsync() |> Async.AwaitTask |> Async.RunSynchronously
+    let uri = httpPath |> Uri
+    let fileName = uri.LocalPath |> Path.GetFileName
+    let targetPath = Path.Combine(Path.GetTempPath(), fileName)
+    File.WriteAllBytes(targetPath, content)
+
+    printfn "-- save as | %s" targetPath
+    (targetPath)
+
+let isUrl path = (path: string).StartsWith("http")
+
 [<EntryPoint>]
 let main argv =
-    use img = Image.Load("images/jw.jpg")
-    use round = img.Clone(fun x -> convertToAvatar x (Size(200, 200)) 20.0f |> ignore) 
-    round.Save("images/output.png")
-    0 // return an integer exit code
+    if argv.Length <> 1 then
+        printfn "-- invalid argument"
+        -1
+    else 
+        let org = argv.[0]
+        // get path
+        let path = if isUrl org then downloadImage org else org
+
+        // process
+        use img = Image.Load(path)
+        use round = img.Clone(fun x -> convertToAvatar x (Size(300, 300)) 150.0f |> ignore) 
+        round.Save("images/output.png")
+
+        // remove temp
+        if isUrl org then File.Delete path
+        0
