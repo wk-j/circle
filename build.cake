@@ -11,7 +11,7 @@ Task("Publish").Does(() => {
 Task("Zip")
     .IsDependentOn("Publish")
     .Does(() => {
-        Zip("publish/dotnet-circle", "publish/dotnet-circle.0.1.0.zip");
+        Zip("publish/dotnet-circle", "publish/dotnet-circle.0.2.0.zip");
     });
 
 

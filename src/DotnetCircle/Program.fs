@@ -39,7 +39,7 @@ let cloneAndConvertToAvatarWithoutApply(img: Image<Rgba32>) (size: Size) radius 
     applyRoundedCorners result radius
 
 let downloadImage httpPath = 
-    printfn "-- downlaod | %s" httpPath
+    printfn "-- download | %s" httpPath
 
     use client = new HttpClient()
     let rs = client.GetAsync(httpPath: string) |> Async.AwaitTask |> Async.RunSynchronously
@@ -57,8 +57,9 @@ let isUrl path = (path: string).StartsWith("http")
 let processImage path = 
     use img = Image.Load(path: string)
     use round = img.Clone(fun x -> convertToAvatar x (Size(300, 300)) 150.0f |> ignore) 
-    let name = Path.GetFileName(path)
-    round.Save(name + ".png")
+    let name = Path.GetFileName(path) + ".png"
+    round.Save(name)
+    printfn "-- output | %s" name
 
 [<EntryPoint>]
 let main argv =

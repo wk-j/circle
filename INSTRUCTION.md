@@ -9,6 +9,7 @@ dotnet publish src/DotnetCircle -c Release --output ../../publish --version-suff
 cake build.cake -target=Zip
 
 
+bash
 mkdir /tmp/dotnet-circle
 version=0.1.0
 echo "Installing $version..."

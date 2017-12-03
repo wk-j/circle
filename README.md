@@ -1,5 +1,11 @@
 ## .NET Circle
 
+Create circle image from URL.
+
+```bash
+dotnet circle "https://raw.githubusercontent.com/wk-j/dotnet-circle/master/images/jw.jpg"
+```
+
 ## Installing
 
 ```bash
