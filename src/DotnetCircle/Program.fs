@@ -10,7 +10,11 @@ open SixLabors.Primitives
 open SixLabors.ImageSharp.Processing
 open System.IO
 open System.Net.Http
-open System.ComponentModel.Design
+open Kurukuru
+open Kurukuru
+open Kurukuru
+open Kurukuru
+open Kurukuru
 
 let buildCorner width height radius = 
     let rect = RectangularePolygon(-0.5f, -0.5f, radius, radius)
@@ -39,7 +43,7 @@ let cloneAndConvertToAvatarWithoutApply(img: Image<Rgba32>) (size: Size) radius 
     applyRoundedCorners result radius
 
 let downloadImage httpPath = 
-    printfn "-- download | %s" httpPath
+    Spinner.Start("Download file => " + httpPath, fun () -> ())
 
     use client = new HttpClient()
     let rs = client.GetAsync(httpPath: string) |> Async.AwaitTask |> Async.RunSynchronously
@@ -49,7 +53,8 @@ let downloadImage httpPath =
     let targetPath = Path.Combine(Path.GetTempPath(), fileName)
     File.WriteAllBytes(targetPath, content)
 
-    printfn "-- save as | %s" targetPath
+    Spinner.Start("Create local temporary => " + targetPath, fun () -> ());
+
     (targetPath)
 
 let isUrl path = (path: string).StartsWith("http")
@@ -57,20 +62,25 @@ let isUrl path = (path: string).StartsWith("http")
 let processImage path = 
     use img = Image.Load(path: string)
     use round = img.Clone(fun x -> convertToAvatar x (Size(300, 300)) 150.0f |> ignore) 
-    let name = Path.GetFileName(path) + ".png"
+    let name = Path.ChangeExtension(Path.GetFileName(path), ".png")
     round.Save(name)
-    printfn "-- output | %s" name
+    (name)
 
 [<EntryPoint>]
 let main argv =
     if argv.Length <> 1 then
-        printfn "-- invalid argument"
-        -1
+        Spinner.Start("Invalid argument", fun (spinner: Spinner) -> 
+            spinner.Fail()
+        )
     else 
         let org = argv.[0]
         let path = if isUrl org then downloadImage org else org
-        processImage path
+        Spinner.Start("Processing", fun (spinner: Spinner) -> 
+            let name = processImage path 
+            spinner.Text <- "Write output => " + name 
+        )
 
-        // remove temp
-        if isUrl org then File.Delete path
-        0
+        Spinner.Start("Clear local temporary => " + path, fun () -> 
+            if isUrl org then File.Delete path
+        )
+    0

@@ -11,9 +11,13 @@ Task("Publish").Does(() => {
 Task("Zip")
     .IsDependentOn("Publish")
     .Does(() => {
-        Zip("publish/dotnet-circle", "publish/dotnet-circle.0.2.0.zip");
+        Zip("publish/dotnet-circle", "publish/dotnet-circle.0.3.0.zip");
     });
 
 
 var target = Argument("target", "default");
 RunTarget(target);
+
+/* 
+cake build.cake -target=Zip
+*/
