@@ -54,6 +54,12 @@ let downloadImage httpPath =
 
 let isUrl path = (path: string).StartsWith("http")
 
+let processImage path = 
+    use img = Image.Load(path: string)
+    use round = img.Clone(fun x -> convertToAvatar x (Size(300, 300)) 150.0f |> ignore) 
+    let name = Path.GetFileName(path)
+    round.Save(name + ".png")
+
 [<EntryPoint>]
 let main argv =
     if argv.Length <> 1 then
@@ -61,13 +67,8 @@ let main argv =
         -1
     else 
         let org = argv.[0]
-        // get path
         let path = if isUrl org then downloadImage org else org
-
-        // process
-        use img = Image.Load(path)
-        use round = img.Clone(fun x -> convertToAvatar x (Size(300, 300)) 150.0f |> ignore) 
-        round.Save("images/output.png")
+        processImage path
 
         // remove temp
         if isUrl org then File.Delete path

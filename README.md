@@ -1,5 +1,7 @@
 ## .NET Circle
 
+## Installing
+
 ```bash
-dotnet publish src/DotnetCircle --output ../../publish
+curl -s https://raw.githubusercontent.com/wk-j/dotnet-circle/master/install/install.sh | sudo bash
 ```
