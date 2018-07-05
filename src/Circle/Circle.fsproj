@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>wk.Circle</PackageId>
+    <ToolCommandName>wk-circle</ToolCommandName>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Kurukuru" Version="1.0.0" />
+    <PackageReference Include="sixLabors.ImageSharp" Version="1.0.0-beta0004" />
+    <PackageReference Include="sixLabors.ImageSharp.Drawing" Version="1.0.0-beta0004" />
+  </ItemGroup>
+</Project>
