@@ -9,7 +9,7 @@ Create circle image from URL
 ## Installation
 
 ```
-dotnet tool install -g wk-circle
+dotnet tool install -g wk.Circle
 ```
 
 ## Usage
