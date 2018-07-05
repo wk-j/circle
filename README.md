@@ -16,4 +16,6 @@ dotnet tool install -g wk.Circle
 
 ```bash
 wk-circle "https://raw.githubusercontent.com/wk-j/dotnet-circle/master/images/jw.jpg"
+wk-circle 500 "https://raw.githubusercontent.com/wk-j/dotnet-circle/master/images/jw.jpg"
+wk-circle 1000 images/large.jpg
 ```

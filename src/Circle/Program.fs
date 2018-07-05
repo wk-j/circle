@@ -59,28 +59,36 @@ let downloadImage httpPath =
 
 let isUrl path = (path: string).StartsWith("http")
 
-let processImage path =
+let processImage path width height =
     use img = Image.Load(path: string)
-    use round = img.Clone(fun x -> convertToAvatar x (Size(400, 400)) 200.0f |> ignore)
+    let haft = width / 2 |> float32
+    use round = img.Clone(fun x -> convertToAvatar x (Size(width, height)) haft |> ignore)
     let name = Path.ChangeExtension(Path.GetFileName(path), ".png")
     round.Save(name)
     (name)
 
+let processWithSize size org =
+    let path = if isUrl org then downloadImage org else org
+    Spinner.Start("Processing", fun (spinner: Spinner) ->
+        let name = processImage path size size
+        spinner.Text <- "Write output => " + name
+    )
+
+    Spinner.Start("Clear local temporary => " + path, fun () ->
+        if isUrl org then File.Delete path
+    )
+
 [<EntryPoint>]
 let main argv =
-    if argv.Length <> 1 then
-        Spinner.Start("Invalid argument", fun (spinner: Spinner) ->
-            spinner.Fail()
-        )
-    else
-        let org = argv.[0]
-        let path = if isUrl org then downloadImage org else org
-        Spinner.Start("Processing", fun (spinner: Spinner) ->
-            let name = processImage path
-            spinner.Text <- "Write output => " + name
-        )
-
-        Spinner.Start("Clear local temporary => " + path, fun () ->
-            if isUrl org then File.Delete path
-        )
+    match argv with
+    | [|org|] ->
+        processWithSize 200 org
+    | [|sizeText ; org|] ->
+        let ok, size = Int32.TryParse sizeText
+        if ok then
+            processWithSize size org
+    | _ ->
+            Spinner.Start("Invalid argument", fun (spinner: Spinner) ->
+                spinner.Fail()
+            )
     0
